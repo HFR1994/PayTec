@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">PayTec</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+    <string name="pagar">Pagar</string>
+    <string name="monedero">Monedero</string>
+    <string name="transaciones">Transaciones</string>
+    <string name="imagenproducto">ImagenProducto</string>
+    <string name="nombre_del_producto">Nombre del Producto</string>
+    <string name="precio">Precio</string>
+    <string name="descripcion">Pequeña descripción</string>
+    <string name="agregar_al_carrito">Agregar al Carrito</string>
+    <string name="home">Inicio</string>
+    <string name="warning_nfc_is_off">Tu NFC esta apagado</string>
+    <string name="turn_on_nfc">Porfavor enciende tu NFC para continuar</string>
+    <string name="title_activity_balance">Balance</string>
+    <string name="credito_actual">Credito Actual</string>
+    <string name="your_comment">Password</string>
+    <string name="send">Comprobar</string>
+    <string name="saldo">Este saldo no es transferible</string>
+    <string name="_75_pts">$0 pts</string>
+    <string name="ready_to_authenticate">Listo para Autenticar</string>
+    <string name="ready_to_instructions">Porfavor posiciona el tag en rango de lectura</string>
+    <string name="ready_to_read">Listo para leer</string>
+    <string name="ready_to_write">Listo para escribir</string>
+</resources>
