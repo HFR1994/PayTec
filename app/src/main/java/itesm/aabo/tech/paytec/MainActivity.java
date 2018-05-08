@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.MifareClassic;
@@ -27,6 +29,7 @@ import android.widget.Toast;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Locale;
 
@@ -120,7 +123,7 @@ public class MainActivity extends AppCompatActivity
         Log.d(TAG,"mPurchase: "+String.valueOf(mPurchaseMode));
         Log.d(TAG,"mWrite: "+String.valueOf(mWriteMode));
 
-        if(mTagDialog.isShowing()){
+        if(mTagDialog!=null && mTagDialog.isShowing()){
             mTagDialog.dismiss();
         }
 
@@ -220,8 +223,7 @@ public class MainActivity extends AppCompatActivity
                             int bloque = 4;
                             byte[] dataread = mfc.readBlock(bloque);
 
-                            String blockread = getHexString(dataread, dataread.length);
-                            Log.i(TAG, "Bloque Leido: " + blockread);
+                            String blockread = new String(dataread,Charset.forName("UTF-8")).trim();
 
                             if (fragment_obj != null && fragment_obj.isVisible()) {
                                 String val = "$"+blockread+" pts";
@@ -349,21 +351,38 @@ public class MainActivity extends AppCompatActivity
                         if (authA && authB) {
                             int bloque = 4;
 
-                            byte[] arr = String.valueOf(fragment_obj.writeText.getText()).getBytes(Charset.forName("UTF8"));
-                            byte [] nuevo = new byte[16];
+                            byte[] dataread = mfc.readBlock(bloque);
 
-                            System.arraycopy(arr,0,nuevo,nuevo.length-arr.length, arr.length);
+                            Log.d(TAG,"Datos: "+Arrays.toString(dataread));
 
-                            mfc.writeBlock(bloque,nuevo);
+                            String blockread = new String(dataread, Charset.forName("UTF-8")).trim();
+                            String writeblock = String.valueOf(fragment_obj.writeText.getText());
 
-                            Toast.makeText(this,
-                                    "Escritura a bloque EXITOSA.",
-                                    Toast.LENGTH_LONG).show();
+                            try{
+                                int a=Integer.parseInt(blockread);
+                                int b=Integer.parseInt(writeblock);
+                                int c = a+b;
 
-                            GlobalVariables.addValue(id,Integer.parseInt(String.valueOf(fragment_obj.writeText.getText())));
-                            String val = "$"+GlobalVariables.hashValue(id)+" pts";
+                                byte[] arr = String.valueOf(c).getBytes(Charset.forName("UTF-8"));
+                                byte [] nuevo = new byte[16];
 
-                            fragment_obj.currentBalace.setText(val);
+                                System.arraycopy(arr,0,nuevo,nuevo.length-arr.length, arr.length);
+
+                                mfc.writeBlock(bloque,nuevo);
+
+                                Toast.makeText(this,
+                                        "Escritura a bloque EXITOSA.",
+                                        Toast.LENGTH_LONG).show();
+
+                                GlobalVariables.addTotal(id,c);
+                                String val = "$"+GlobalVariables.hashValue(id)+" pts";
+
+                                fragment_obj.currentBalace.setText(val);
+                            }catch (Exception e){
+                                Toast.makeText(this,
+                                        "Hubo un pequeño problema.",
+                                        Toast.LENGTH_LONG).show();
+                            }
 
                         } else { // Authentication failed - Handle it
                             //Editable BlockField = mDataBloque.getText();
@@ -417,7 +436,6 @@ public class MainActivity extends AppCompatActivity
 
     void resolvePurchaseIntent(Intent intent) throws IOException {
         String action = intent.getAction();
-        BalanceFragment fragment_obj = null;
         Log.i(TAG, "Purchase:" + action);
         if (NfcAdapter.ACTION_TECH_DISCOVERED.equals(action)) {
             Tag tagFromIntent = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
@@ -460,10 +478,14 @@ public class MainActivity extends AppCompatActivity
                         if (authA && authB) {
                             int bloque = 4;
 
-                            byte[] arr = String.valueOf(GlobalVariables.getCart()).getBytes(Charset.forName("UTF8"));
-                            byte [] nuevo = new byte[16];
+                            Log.d(TAG, "Almacenamiento: " + GlobalVariables.hashValue(id));
+                            Log.d(TAG, "Carrito: " + GlobalVariables.getCart());
 
                             if(GlobalVariables.subtractValue(id,Integer.parseInt(String.valueOf(GlobalVariables.getCart())))){
+
+                                byte[] arr = String.valueOf(GlobalVariables.hashValue(id)).getBytes(Charset.forName("UTF-8"));
+                                byte [] nuevo = new byte[16];
+
                                 System.arraycopy(arr,0,nuevo,nuevo.length-arr.length, arr.length);
 
                                 mfc.writeBlock(bloque,nuevo);
@@ -478,8 +500,6 @@ public class MainActivity extends AppCompatActivity
                             }
 
                         } else { // Authentication failed - Handle it
-                            //Editable BlockField = mDataBloque.getText();
-                            //BlockField.clear();
                             Toast.makeText(this,
                                     "Lectura de bloque FALLIDA dado autentificación fallida.",
                                     Toast.LENGTH_LONG).show();
@@ -723,4 +743,5 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
 }

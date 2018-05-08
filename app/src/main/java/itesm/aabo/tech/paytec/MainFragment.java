@@ -22,7 +22,6 @@ public class MainFragment extends Fragment {
     ArrayList<Producto> listaProductos;
     RecyclerView recyclerView;
 
-
     public MainFragment() {
         // Required empty public constructor
     }
@@ -52,9 +51,8 @@ public class MainFragment extends Fragment {
             }
         });
 
-
-
         recyclerView.setAdapter(adapter);
+
 
 
         return rootView;

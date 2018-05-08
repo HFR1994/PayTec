@@ -19,7 +19,7 @@
     <string name="turn_on_nfc">Porfavor enciende tu NFC para continuar</string>
     <string name="title_activity_balance">Balance</string>
     <string name="credito_actual">Credito Actual</string>
-    <string name="your_comment">Password</string>
+    <string name="your_comment">Password (Si se deja en blanco es el default)</string>
     <string name="send">Comprobar</string>
     <string name="saldo">Este saldo no es transferible</string>
     <string name="_75_pts">$0 pts</string>

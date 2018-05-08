@@ -1,5 +1,7 @@
 package itesm.aabo.tech.paytec;
 
+import android.util.Log;
+
 import java.util.HashMap;
 
 public class GlobalVariables {
@@ -14,7 +16,7 @@ public class GlobalVariables {
         GlobalVariables.cart = cart;
     }
 
-    public static Integer hashValue(String id){
+    public static int hashValue(String id){
         if(valores.containsKey(id)){
             return Integer.parseInt(String.valueOf(valores.get(id)));
         }
@@ -29,6 +31,10 @@ public class GlobalVariables {
         }else{
             valores.put(id, value);
         }
+    }
+
+    public static void addTotal(String id, int value){
+        valores.put(id, value);
     }
 
     public static boolean subtractValue(String id, int value){

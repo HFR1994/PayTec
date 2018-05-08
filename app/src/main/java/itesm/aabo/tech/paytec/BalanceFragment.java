@@ -61,13 +61,19 @@ public class BalanceFragment extends Fragment {
 
                 setWriteKey(textEdit.getText().toString());
 
-                if(getWriteKey().length() !=12){
-                    Toast.makeText(rootView.getContext(),
-                            "La llave que ingresate no concuerda con lo esperado",
-                            Toast.LENGTH_LONG).show();
-                }else{
+                if(getWriteKey().length() == 0){
+                    setWriteKey("FFFFFFFFFFFF");
                     ((MainActivity) Objects.requireNonNull(getActivity())).readtoRead();
                     commentDialog.dismiss();
+                }else {
+                    if (getWriteKey().length() != 12) {
+                        Toast.makeText(rootView.getContext(),
+                                "La llave que ingresate no concuerda con lo esperado",
+                                Toast.LENGTH_LONG).show();
+                    } else {
+                        ((MainActivity) Objects.requireNonNull(getActivity())).readtoRead();
+                        commentDialog.dismiss();
+                    }
                 }
 
             }
@@ -79,15 +85,16 @@ public class BalanceFragment extends Fragment {
                 navigationView = (NavigationView) rootView.getRootView().findViewById(R.id.nav_view);
                 navigationView.getMenu().getItem(0).setChecked(true);
                 MainFragment fragment = new MainFragment();
-                                android.support.v4.app.FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                android.support.v4.app.FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
                 fragmentTransaction.replace(R.id.fragment_container, fragment);
                 fragmentTransaction.commit();
                 commentDialog.dismiss();
             }
         });
 
-        commentDialog.show();
-
+        if(!commentDialog.isShowing()){
+            commentDialog.show();
+        }
 
         boton.setOnClickListener(new View.OnClickListener() {
             @Override
